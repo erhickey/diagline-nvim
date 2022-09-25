@@ -1,15 +1,3 @@
--- plain string replacement, avoid string.gsub and % funkiness
-function string.replace(text, to_replace, replacement)
-  local s, e = string.find(text, to_replace, 1, true)
-
-  if s then
-    local new = string.sub(text, 1, s-1) .. replacement .. string.sub(text, e+1)
-    return string.replace(new, to_replace, replacement)
-  end
-
-  return text
-end
-
 local levels = {
   {
     level = vim.diagnostic.severity.ERROR,
@@ -44,7 +32,7 @@ end
 local separator = '%='
 local file_name = ' %-f'
 local modified = ' %-m %-q'
-local diag_counts = '%DIAG'
+local diag_counts = '%{%luaeval("diagline_nvim_counts()")%}'
 local line_info = '%l,%c   %P '
 
 local presets = {
@@ -69,27 +57,6 @@ local module = {
   options = presets
 }
 
-function module.diagnostic_counts()
-  local diags = {}
-
-  for _, l in pairs(levels) do
-    local level = l['level']
-    local color = l['color']
-    local ind = module.options.indicators[level]
-    local count = vim.tbl_count(vim.diagnostic.get(0, { severity = level }))
-    if count > 0 then
-      table.insert(diags, color .. count .. " " .. ind)
-    end
-  end
-
-  return table.concat(diags, '  ') ..  '%#StatusLine#'
-end
-
-function module.statusline()
-  local diag_counts = module.diagnostic_counts()
-  return string.replace(module.options.statusline, '%DIAG', diag_counts)
-end
-
 function module.setup(opts)
   if opts ~= nil then
     if opts.indicators ~= nil then
@@ -103,9 +70,24 @@ function module.setup(opts)
     end
   end
 
+  function diagline_nvim_counts()
+    local diags = {}
+
+    for _, l in pairs(levels) do
+      local level = l['level']
+      local color = l['color']
+      local ind = module.options.indicators[level]
+      local count = vim.tbl_count(vim.diagnostic.get(0, { severity = level }))
+      if count > 0 then
+        table.insert(diags, color .. count .. " " .. ind)
+      end
+    end
+
+    return table.concat(diags, '  ') ..  '%#StatusLine#'
+  end
+
   create_diag_highlights()
-  diagline_nvim_statusline = module.statusline
-  vim.opt.statusline = '%!luaeval("diagline_nvim_statusline()")'
+  vim.opt.statusline = module.options.statusline
 end
 
 return module
