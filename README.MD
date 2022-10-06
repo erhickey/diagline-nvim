@@ -31,7 +31,7 @@ require('diagline-nvim').setup({
 
 ### Status Line Content
 
-Customize your status line using status line item codes (see :help statusline) and the diagline_nvim_counts function exposed by this plugin. Example below is the default value.
+Customize your status line using status line item codes (see [`:help statusline`](https://neovim.io/doc/user/options.html#'statusline')) and the diagline_nvim_counts function exposed by this plugin. Example below is the default value.
 
 ```lua
 require('diagline-nvim').setup({
