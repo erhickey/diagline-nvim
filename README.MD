@@ -1,6 +1,6 @@
 # diagline-nvim
 
-Neovim plugin that allows easy inclusion of diagnostic counts in the statusline. Default configuration requires a [NerdFont](https://www.nerdfonts.com/).
+Neovim plugin that allows easy inclusion of diagnostic counts in the statusline.
 
 ![](/screenshots/statusline.png)
 
@@ -14,27 +14,59 @@ require('diagline-nvim').setup()
 
 ## Configuration
 
-### Diagnostic Level Indicators
+### Status Line Content
 
-If you don't have a NerdFont installed you should set custom indicators for each severity level.
+Customize your status line using status line item codes (see [`:help statusline`](https://neovim.io/doc/user/options.html#'statusline')) and the Diagline_nvim_counts function exposed by this plugin. Example below is the default value.
 
 ```lua
 require('diagline-nvim').setup({
-  indicators = {
-    [vim.diagnostic.severity.ERROR] = 'X',
-    [vim.diagnostic.severity.WARN] = '!',
-    [vim.diagnostic.severity.HINT] = '*',
-    [vim.diagnostic.severity.INFO] = 'i',
-  }
+  statusline = ' %-f %-m %-q%=%{%luaeval("Diagline_nvim_counts()")%}%=%l,%c   %P '
 })
 ```
 
-### Status Line Content
-
-Customize your status line using status line item codes (see [`:help statusline`](https://neovim.io/doc/user/options.html#'statusline')) and the diagline_nvim_counts function exposed by this plugin. Example below is the default value.
+If statusline is not a string this plugin will not set the statusline, but the Diagline_nvim_counts function will still be exposed.
 
 ```lua
 require('diagline-nvim').setup({
-  statusline = ' %-f %-m %-q%=%{%luaeval("diagline_nvim_counts()")%}%=%l,%c   %P '
+  statusline = false
 })
+
+```
+
+### Colors and Icons
+
+The colors and icons used are those of the Diagnostic(Error|Warn|Hint|Info) highlights, and the DiagnosticSign(Error|Warn|Hint|Info) signs. Here is an example of how to modify those items:
+
+```lua
+local severities = {
+  Error = {
+    icon = '',
+    fg = '#cc241d'
+  },
+  Warn = {
+    icon = '',
+    fg = '#d65d0e'
+  },
+  Hint = {
+    icon = '',
+    fg = '#458588'
+  },
+  Info = {
+    icon = '',
+    fg = '#a89984'
+  }
+}
+
+for type, config in pairs(severities) do
+  vim.cmd('highlight clear Diagnostic' .. type)
+  vim.cmd('highlight Diagnostic' .. type .. ' guifg=' .. config.fg)
+
+  vim.fn.sign_define(
+    'DiagnosticSign' .. type,
+    {
+      text = config.icon,
+      texthl = 'Diagnostic' .. type,
+      numhl = 'Diagnostic' .. type,
+    })
+end
 ```
