@@ -18,15 +18,13 @@ local severities = {
 }
 
 local function create_diag_statusline_highlights()
-  local slbg = string.format('#%06x', vim.api.nvim_get_hl_by_name('StatusLine', true)['foreground'])
-  local defg = string.format('#%06x', vim.api.nvim_get_hl_by_name('DiagnosticError', true)['foreground'])
-  local dwfg = string.format('#%06x', vim.api.nvim_get_hl_by_name('DiagnosticWarn', true)['foreground'])
-  local difg = string.format('#%06x', vim.api.nvim_get_hl_by_name('DiagnosticInfo', true)['foreground'])
-  local dhfg = string.format('#%06x', vim.api.nvim_get_hl_by_name('DiagnosticHint', true)['foreground'])
-  vim.highlight.create('SLDiagnosticError', { guibg=slbg, guifg=defg })
-  vim.highlight.create('SLDiagnosticWarn', { guibg=slbg, guifg=dwfg })
-  vim.highlight.create('SLDiagnosticInfo', { guibg=slbg, guifg=difg })
-  vim.highlight.create('SLDiagnosticHint', { guibg=slbg, guifg=dhfg })
+  local statusline_bg = string.format('#%06x', vim.api.nvim_get_hl_by_name('StatusLine', true)['foreground'])
+
+  for _, severity in ipairs(severities) do
+    local hl_name = string.format('Diagnostic%s', severity['name'])
+    local fg_color = string.format('#%06x', vim.api.nvim_get_hl_by_name(hl_name, true)['foreground'])
+    vim.api.nvim_set_hl(0, string.format('SL%s', hl_name), { bg=statusline_bg, fg=fg_color })
+  end
 end
 
 local separator = '%='
