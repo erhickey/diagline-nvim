@@ -59,15 +59,15 @@ function module.setup(config)
 
     for _, severity in ipairs(severities) do
       local name = severity['name']
-      local color = '%#SLDiagnostic' .. name .. '#'
-      local icon = vim.fn.sign_getdefined('DiagnosticSign' .. name)[1]['text']
+      local color = string.format('%s%s%s', '%#SLDiagnostic', name, '#')
+      local icon = vim.fn.sign_getdefined(string.format('DiagnosticSign%s', name))[1]['text']
       local count = vim.tbl_count(vim.diagnostic.get(0, { severity = severity['severity'] }))
       if count > 0 then
-        table.insert(diags, color .. count .. ' ' .. icon)
+        table.insert(diags, string.format('%s%s %s', color, count, icon))
       end
     end
 
-    return table.concat(diags, ' ') ..  '%#StatusLine#'
+    return string.format('%s%s', table.concat(diags, ' '), '%#StatusLine#')
   end
 
   if type(module.config.statusline) == 'string' then
