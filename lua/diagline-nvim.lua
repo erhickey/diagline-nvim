@@ -18,7 +18,7 @@ local severities = {
 }
 
 local function create_diag_statusline_highlights()
-  local statusline_bg = string.format('#%06x', vim.api.nvim_get_hl_by_name('StatusLine', true)['foreground'])
+  local statusline_bg = string.format('#%06x', vim.api.nvim_get_hl_by_name('StatusLine', true)['foreground'] or 472462)
 
   for _, severity in ipairs(severities) do
     local hl_name = string.format('Diagnostic%s', severity['name'])
