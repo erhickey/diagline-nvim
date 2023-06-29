@@ -1,19 +1,23 @@
 local severities = {
   {
     name = 'Error',
-    severity = vim.diagnostic.severity.ERROR
+    severity = vim.diagnostic.severity.ERROR,
+    default_icon = 'E'
   },
   {
     name = 'Warn',
-    severity = vim.diagnostic.severity.WARN
+    severity = vim.diagnostic.severity.WARN,
+    default_icon = 'W'
   },
   {
     name = 'Info',
-    severity = vim.diagnostic.severity.INFO
+    severity = vim.diagnostic.severity.INFO,
+    default_icon = 'I'
   },
   {
     name = 'Hint',
-    severity = vim.diagnostic.severity.HINT
+    severity = vim.diagnostic.severity.HINT,
+    default_icon = 'H'
   },
 }
 
@@ -60,7 +64,11 @@ function module.setup(config)
     for _, severity in ipairs(severities) do
       local name = severity['name']
       local color = string.format('%s%s%s', '%#SLDiagnostic', name, '#')
-      local icon = vim.fn.sign_getdefined(string.format('DiagnosticSign%s', name))[1]['text']
+      local icon = severity['default_icon']
+      local sign = vim.fn.sign_getdefined(string.format('DiagnosticSign%s', name))
+      if next(sign) ~= nil then
+        icon = sign[1]['text']
+      end
       local count = vim.tbl_count(vim.diagnostic.get(0, { severity = severity['severity'] }))
       if count > 0 then
         table.insert(diags, string.format('%s%s %s', color, count, icon))

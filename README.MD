@@ -40,19 +40,19 @@ The colors and icons used are those of the Diagnostic(Error|Warn|Hint|Info) high
 ```lua
 local severities = {
   Error = {
-    icon = '',
+    icon = '',
     fg = '#cc241d'
   },
   Warn = {
-    icon = '',
+    icon = '',
     fg = '#d65d0e'
   },
   Hint = {
-    icon = '',
+    icon = '',
     fg = '#458588'
   },
   Info = {
-    icon = '',
+    icon = '',
     fg = '#a89984'
   }
 }
